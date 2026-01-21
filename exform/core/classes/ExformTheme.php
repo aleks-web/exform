@@ -32,5 +32,7 @@ class ExformTheme {
             $content = file_get_contents($form_file);
             return htmlspecialchars($content);
         }
+
+        return null;
     }
 }

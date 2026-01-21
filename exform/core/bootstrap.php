@@ -11,12 +11,7 @@ require_once(__DIR__ . '/const.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/autoload.php');
 
-
 foreach (get_all_theme_folders() as $themeName => $themePath) {
     $theme = new ExformTheme($themeName, $themePath);
     $config['themes'][] = $theme;
 }
-
-echo '<pre>';
-print_r($config);
-echo '</pre>';

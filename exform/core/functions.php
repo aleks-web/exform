@@ -18,3 +18,9 @@ function get_all_theme_folders() {
 
     return $paths;
 }
+
+function dd($dd) {
+    echo '<pre>';
+    print_r($dd);
+    echo '</pre><br><br><hr><br><br>';
+}
