@@ -19,16 +19,16 @@ class ExformManager {
 }
 
 class Exform {
+  #serverConfig = {};
+
   constructor(element = null, theme = 'callback', wrapperSelector = 'body', path = '/exform') {
     this.path = path;
     this.element = element;
     this.wrapper = wrapperSelector;
     this.theme = theme;
-
-    this.init();
   }
 
-  init() {
+  async init() {
     this.includeCss();
     
     if (!window.exform) {
@@ -36,6 +36,8 @@ class Exform {
     }
 
     window.exform.addForm(this);
+
+    await this.getServerConfig();
   }
 
   // Подключение стилей формы
@@ -50,18 +52,20 @@ class Exform {
     }
   }
 
+  async getServerConfig() {
+
+    let result = await fetch('/exform/api/config.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+
+    this.#serverConfig = await result.json();
+    console.log(this.#serverConfig);
+  }
+
 }
 
-new Exform();
-
-let ss = new FormData();
-ss.append('test', '34');
-let s = fetch('/exform/exform.php', {
-  method: 'POST',
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: JSON.stringify()
-});
-
-s.then(async r => console.log(await r.text()));
+let s = new Exform();
+await s.init();

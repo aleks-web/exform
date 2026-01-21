@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="/exform/exform.js"></script>
+    <script src="/exform/exform.js" type="module"></script>
 </head>
 <body>
     
