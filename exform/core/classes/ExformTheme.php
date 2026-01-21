@@ -25,17 +25,12 @@ class ExformTheme {
         }
     }
 
-    public function getFormContent() {
-        $form_file = realpath($this->getPath() . '/form.php');
+    public function getContentFromFile($file) {
+        $form_file = realpath($this->getPath() . '/' . $file);
 
-        $file_handle = fopen($form_file, 'r'); // Открываем файл, $file_handle теперь - ресурс
-        if ($file_handle) {
-            echo "Файл открыт, ресурс: " . $file_handle . "\n"; // Выведет "Файл открыт, ресурс: Resource id #5"
-            $content = fread($file_handle, 1024); // Читаем из ресурса
-            echo "Содержимое: " . $content . "\n";
-            fclose($file_handle); // Закрываем ресурс
-        } else {
-            echo "Не удалось открыть файл.";
+        if (file_exists($form_file)) {
+            $content = file_get_contents($form_file);
+            return htmlspecialchars($content);
         }
     }
 }

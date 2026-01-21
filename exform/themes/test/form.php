@@ -2,4 +2,8 @@
 
 echo 'form';
 
-$s = 'asdasd';
+$s = '<div>asdasd</div>';
+
+?>
+
+<div>test</div>
