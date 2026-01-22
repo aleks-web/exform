@@ -1,12 +1,31 @@
 class ExformManager {
+    #exformUrn;
+    #configServer;
     #forms = [];
 
-    constructor() {
+    constructor(exformUrn = '/exform') {
         if (!ExformManager.instance) {
             ExformManager.instance = this;
             window.exform = ExformManager.instance;
         }
+
+        this.#exformUrn = exformUrn;
         return ExformManager.instance;
+    }
+
+    async init() {
+        let result = await fetch(this.#exformUrn + '/api/config.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        this.#configServer = await result.json();
+    }
+
+    getConfigServer() {
+        return this.#configServer;
     }
 
     addForm(form) {
@@ -16,56 +35,88 @@ class ExformManager {
     getForms() {
         return this.#forms;
     }
+
+    getFormByName(themeName) {
+        for (let theme of Object.values(this.getConfigServer().themes_array)) {
+            if (theme.name === themeName) {
+                return theme; 
+            }
+        }
+    }
+
+    setExformUrn(urn) {
+        this.#exformUrn = urn;
+    }
+
+    getExformUrn() {
+        return this.#exformUrn;
+    }
 }
 
 class Exform {
-  #serverConfig = {};
 
-  constructor(element = null, theme = 'callback', wrapperSelector = 'body', path = '/exform') {
-    this.path = path;
-    this.element = element;
-    this.wrapper = wrapperSelector;
-    this.theme = theme;
+  constructor(themeObjectFromConfigServer = null) {
+    this.theme = themeObjectFromConfigServer;
   }
 
   async init() {
-    this.includeCss();
-    
     if (!window.exform) {
         window.exform = new ExformManager();
+        await window.exform.init();
     }
-
     window.exform.addForm(this);
-
-    await this.getServerConfig();
+    this.includeCss();
+    this.includeYaCaptchaScript();
+    this.initForm();
   }
 
   // Подключение стилей формы
   includeCss() {
-    let cssThemePath = this.path + '/themes/' + this.theme + '/assets/style.css';
+    let cssThemePath = window.exform.getExformUrn() + '/themes/' + this.theme.name + '/assets/style.css';
 
     let head = document.querySelector('head');
-    let findLinkResult = head.querySelectorAll(`link[href="${cssThemePath}"]`).lenght;
+    let findLinkResult = head.querySelectorAll(`link[href="${cssThemePath}"]`).length;
 
     if (!findLinkResult) {
         head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" type="text/css" href="${cssThemePath}" />`);
     }
   }
 
-  async getServerConfig() {
+  // Подключение яндекс капчи
+  includeYaCaptchaScript() {
+    let head = document.querySelector('head');
+    const scriptsResult = document.querySelectorAll('script[src^="https://smartcaptcha"]').length;
 
-    let result = await fetch('/exform/api/config.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    });
+    if (!!this.theme.config.ya_captha && !scriptsResult) {
+        head.insertAdjacentHTML('beforeend', '<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>');
+    }
+  }
 
-    this.#serverConfig = await result.json();
-    console.log(this.#serverConfig);
+  // Отображение формы
+  initForm() {
+    let selector = document.querySelector(this.theme.config.selector);
+
+    if (!!this.theme.config.is_modal && selector) {
+        selector.addEventListener('click', e => {
+            console.log(e);
+        });
+    }
+
+    
   }
 
 }
 
-let s = new Exform();
-await s.init();
+/*
+    Инициализируем менеджер exform
+*/
+window.exform = new ExformManager();
+await window.exform.init();
+
+/*
+    Создаем формы
+*/
+Object.values(window.exform.getConfigServer().themes_array).forEach(async theme => {
+    let exf = new Exform(theme);
+    await exf.init();
+});
