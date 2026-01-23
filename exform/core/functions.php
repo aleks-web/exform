@@ -24,3 +24,11 @@ function dd($dd) {
     print_r($dd);
     echo '</pre><br><br><hr><br><br>';
 }
+
+function jsonResponse($msg = 'Не удалось обработать запрос', $success = true, $data = []) {
+    return json_encode([
+       'message' => $msg,
+       'success' => $success,
+       'data' => $data 
+    ], JSON_UNESCAPED_SLASHES);
+}

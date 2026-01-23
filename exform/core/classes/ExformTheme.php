@@ -1,15 +1,20 @@
 <?php
 
+
+
 class ExformTheme {
     private $path;
     private $name;
     private $config;
+    private $isCurrent;
+    private static $themes = [];
 
     public function __construct($name = null, $path = null) {
         $this->path = $path;
         $this->name = $name;
         $this->config = $this->getConfigFromFile();
-
+        $this->isCurrent = false;
+        array_push(self::$themes, $this);
     }
 
     public function getPath() {
@@ -24,7 +29,10 @@ class ExformTheme {
         $form_file = realpath($this->getPath() . '/form.php');
 
         if (file_exists($form_file)) {
+            ob_start();
             require $form_file;
+            $result = ob_get_clean();
+            return $result;
         }
     }
 
@@ -40,13 +48,17 @@ class ExformTheme {
     }
 
     private function getConfigFromFile() {
-        $config = [];
+        $themeConfig = [];
         $config_file = realpath($this->getPath() . '/config.ini');
         if (file_exists($config_file)) {
-            $config = parse_ini_file($config_file);
+            $themeConfig = parse_ini_file($config_file);
         }
 
-        return $config;
+        if (isset($GLOBALS['config'])) {
+            $themeConfig = array_merge($GLOBALS['config'], $themeConfig);
+        }
+
+        return $themeConfig;
     }
 
     public function getConfig() {
@@ -58,7 +70,49 @@ class ExformTheme {
         $data['path'] = $this->path;
         $data['name'] = $this->name;
         $data['config'] = $this->config;
+        $data['isCurrent'] = $this->isCurrent;
 
         return $data;
+    }
+
+    public static function getThemeByName($themeName) {
+        foreach (self::getAllThemes() as $theme) {
+            if ($theme->getName() === $themeName) {
+                return $theme;
+            }
+        }
+
+        return null;
+    }
+
+    public static function setCurrentThemeByName($themeName) {
+        $theme = ExformTheme::getThemeByName($themeName);
+        $theme->isCurrent = true;
+    }
+
+    public static function getCurrentTheme() {
+        foreach (self::getAllThemes() as $theme) {
+            if ($theme->isCurrent()) {
+                return $theme;
+            }
+        }
+        return null;
+    }
+
+    public static function getAllThemes() {
+        return self::$themes;
+    }
+
+    public static function getAllThemesArray() {
+        $themes = [];
+        foreach (self::getAllThemes() as $theme) {
+            $themes[$theme->getName()] = $theme->toArray();
+        }
+
+        return $themes;
+    }
+
+    public function isCurrent() {
+        return $this->isCurrent;
     }
 }

@@ -13,8 +13,4 @@ require_once(__DIR__ . '/autoload.php');
 
 foreach (get_all_theme_folders() as $themeName => $themePath) {
     $theme = new ExformTheme($themeName, $themePath);
-    $config['themes_object'][$themeName] = $theme;
-    $config['themes_array'][$themeName] = $theme->toArray();
 }
-
-// dd($config);

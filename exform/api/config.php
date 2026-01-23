@@ -9,7 +9,7 @@ $response = $config;
 
 if (isset($config['exform_urn'])) {
     $response['exform_urn'] = rtrim($config['exform_urn'], '/');
-    unset($response['themes_object']);
 }
+$response['themes'] = ExformTheme::getAllThemesArray();
 
 echo json_encode($response, JSON_UNESCAPED_SLASHES);
