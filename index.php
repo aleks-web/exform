@@ -7,6 +7,6 @@
     <script src="/exform/exform.js" type="module"></script>
 </head>
 <body>
-    <div id="callback" style="width: 20px;height: 20px;background-color: green;"></div>
+    <div id="callback" style="width: 200px;height: 200px;background-color: green;cursor: pointer;"></div>
 </body>
 </html>

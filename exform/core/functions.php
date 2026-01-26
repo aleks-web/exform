@@ -25,7 +25,7 @@ function dd($dd) {
     echo '</pre><br><br><hr><br><br>';
 }
 
-function jsonResponse($msg = 'Не удалось обработать запрос', $success = true, $data = []) {
+function jsonResponse($msg = 'Успешное выполнение запроса', $success = true, $data = []) {
     return json_encode([
        'message' => $msg,
        'success' => $success,

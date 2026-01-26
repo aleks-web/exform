@@ -1,7 +1,6 @@
 class ExformManager {
     #exformUrn;
     #configServer;
-    #forms = [];
 
     constructor(exformUrn = '/exform') {
         if (!ExformManager.instance) {
@@ -27,14 +26,6 @@ class ExformManager {
 
     getConfigServer() {
         return this.#configServer;
-    }
-
-    addForm(form) {
-        this.#forms.push(form);
-    }
-
-    getForms() {
-        return this.#forms;
     }
 
     getFormByName(themeName) {
@@ -64,6 +55,14 @@ class ExformManager {
             head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" type="text/css" href="${cssPath}" />`);
         }
     }
+
+    // Закрыть все модалки
+    closeAllModals() {
+        document.querySelectorAll('.exform-wrapper.is_modal').forEach(el => {
+            el.remove();
+            document.querySelector('.bg-exform')?.remove();
+        });
+    }
 }
 
 class Exform {
@@ -79,7 +78,6 @@ class Exform {
         window.exform = new ExformManager();
         await window.exform.init();
     }
-    window.exform.addForm(this);
     this.includeCss();
     this.includeYaCaptchaScript();
     await this.initForm();
@@ -99,7 +97,6 @@ class Exform {
 
   // Подключение яндекс капчи
   includeYaCaptchaScript() {
-    console.log(this.theme);
     let head = document.querySelector('head');
     const scriptsResult = document.querySelectorAll('script[src^="https://smartcaptcha"]').length;
 
@@ -114,9 +111,51 @@ class Exform {
 
     if (!!this.theme.config.is_modal && selector) {
         selector.addEventListener('click', async e => {
-            this.createBgModal();
-            await this.getAndInsertForm();
+            this.renderForm();
         });
+    }
+
+    if (!(!!this.theme.config.is_modal) && selector) {
+        this.renderForm();
+    }
+  }
+
+  addSubmitListner(form) {
+    let submitBtn = form.querySelector("[type='submit']");
+    form = form.querySelector("form");
+
+    try {
+        submitBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            let formData = new FormData(form);
+            formData.append('z_index', this.findHighestZIndex());
+
+            const response = await fetch(window.exform.getExformUrn() + '/api/sendform.php', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            this.openMsg(result.data.msg);
+        });
+    } catch(er) {
+        console.log("Не удалось задать прослушивателя события для кнопки отправки");
+        console.log(er);
+    }
+  }
+
+  openMsg(msgForm) {
+    if (msgForm) {
+        document.querySelectorAll('.exform-wrapper.is_modal').forEach(el => {
+            el.remove();
+        });
+
+        if (!(!!this.theme.config.is_modal)) {
+            this.createBgModal();
+        }
+
+        document.body.insertAdjacentHTML('beforeend', msgForm);
+        this.setElementScreenCenter(document.querySelector('.exform-wrapper.is_modal'));
     }
   }
 
@@ -144,10 +183,6 @@ class Exform {
     return result.data.form;
   }
 
-  async getAndInsertForm() {
-    document.body.insertAdjacentHTML('beforeend', await this.getFormFromServer());
-  }
-
   // Ищем максимальный z-index, который есть на странице
   findHighestZIndex() {
     let maxZIndex = 0;
@@ -165,6 +200,40 @@ class Exform {
     return maxZIndex;
   }
 
+  setElementScreenCenter(element) {
+    let elRec = element.getBoundingClientRect();
+    element.style.top = `calc(50% - ${elRec.height / 2}px)`;
+    element.style.left = `calc(50% - ${elRec.width / 2}px)`;
+  }
+
+  addCenterFormListner(formElement) {
+    this.setElementScreenCenter(formElement);
+    window.addEventListener('resize', () => {
+        this.setElementScreenCenter(formElement);
+    });
+  }
+
+
+  // Рендер формы / отображение
+  async renderForm() {
+    if (!!this.theme.config.is_modal) {
+        window.exform.closeAllModals();
+        this.createBgModal();
+
+        let formCode = await this.getFormFromServer();
+        document.body.insertAdjacentHTML('beforeend', formCode);
+        let form = document.querySelector('.exform-wrapper.' + this.theme.name);
+
+        this.addCenterFormListner(form);
+        this.addSubmitListner(form);
+    } else {
+        let selector = document.querySelector(this.theme.config.selector);
+        let form = await this.getFormFromServer();
+        selector.innerHTML = form;
+        form = selector.querySelector('.exform-wrapper');
+        this.addSubmitListner(form);
+    }
+  }
 }
 
 /*

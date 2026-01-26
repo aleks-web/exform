@@ -36,12 +36,24 @@ class ExformTheme {
         }
     }
 
+    public function requireMsg($bool = true) {
+        $msgFile = $bool ? 'success_msg' : 'error_msg';
+        $form_file = realpath($this->getPath() . '/' . $msgFile . '.php');
+
+        if (file_exists($form_file)) {
+            ob_start();
+            require $form_file;
+            $result = ob_get_clean();
+            return $result;
+        }
+    }
+
     public function getContentFromFile($file) {
         $file = realpath($this->getPath() . '/' . $file);
 
         if (file_exists($file)) {
             $content = file_get_contents($file);
-            return htmlspecialchars($content);
+            return $content;
         }
 
         return null;
@@ -62,7 +74,7 @@ class ExformTheme {
     }
 
     public function getConfig() {
-        return $this->config;
+        return $this->getConfigFromFile();
     }
 
     public function toArray() {

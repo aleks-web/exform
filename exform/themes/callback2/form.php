@@ -15,7 +15,7 @@ $zIndex = (int) $config['request_data']['z_index'] + 10;
 <div class="exform-wrapper <?= $curentTheme->name ?> <?= $isModal ? 'is_modal' : 'is_not_modal' ?>" style="z-index: <?= $zIndex ?>;">
     <div class="exform-btn-close" onclick="window.exform.closeAllModals();"></div>
 
-    <div class="exform-header">Свяжитесь с нами</div>
+    <div class="exform-header">Свяжитесь с нами asdasdasd</div>
 
     <form name="exform">
         <input type="text" name="username" placeholder="Ваше имя">

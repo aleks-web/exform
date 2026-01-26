@@ -1,0 +1,84 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+header {
+    height: 50px;
+    background-color: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+}
+
+.container {
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+main {
+    margin-top: 50px;
+}
+
+.exform-main {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.exform-main_loading {
+    opacity: 0.6;
+}
+
+.exform-sidebar {
+    padding: 20px;
+    background-color: #ebebeb;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+.exform-content {
+    padding: 20px;
+    background-color: #ebebeb;
+    border-radius: 10px;
+    width: 100%;
+}
+
+ul {
+    list-style: none;
+}
+
+.exform-sidebar ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.exform-sidebar__tab {
+    display: block;
+    width: 100%;
+    padding: 8px 11px;
+    border-radius: 5px;
+    cursor: auto;
+}
+
+.exform-sidebar__tab_active {
+    background-color: #000000;
+    color: white;
+}
+
+.exform-sidebar__name {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.exform-content__tab {
+    display: none;
+}
+.exform-content__tab_active {
+    display: block;
+}
