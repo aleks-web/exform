@@ -127,4 +127,15 @@ class ExformTheme {
     public function isCurrent() {
         return $this->isCurrent;
     }
+
+    public function saveContentInFile($file, $content) {
+        $file = realpath($this->getPath() . '/' . $file);
+
+        if (file_exists($file)) {
+            $result = file_put_contents($file, $content);
+            return $result;
+        }
+
+        return false;
+    }
 }

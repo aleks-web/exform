@@ -62,14 +62,40 @@
                                     </div>
                                 </div>
 
+                                <div x-data="accordion" class="accordion">
+                                    <div @click="toggle" class="accordion__btn" :class="{'accordion__btn_open': open}">Файл настроек</div>
 
+                                    <div x-show="open" x-cloak>
+                                        <div x-text="theme.files.config" class="exform-content__ace exform-content__file exform-content__file-style" data-type="ini" :data-theme="theme.name" data-file="config"></div>
+                                    </div>
+                                </div>
+
+                                <div x-data="accordion" class="accordion">
+                                    <div @click="toggle" class="accordion__btn" :class="{'accordion__btn_open': open}">Сообщение об успешной отправке</div>
+
+                                    <div x-show="open" x-cloak>
+                                        <div x-text="theme.files.success_msg" class="exform-content__ace exform-content__file exform-content__file-style" data-type="php" :data-theme="theme.name" data-file="success-msg"></div>
+                                    </div>
+                                </div>
+
+                                <div x-data="accordion" class="accordion">
+                                    <div @click="toggle" class="accordion__btn" :class="{'accordion__btn_open': open}">Сообщение с ошибкой</div>
+
+                                    <div x-show="open" x-cloak>
+                                        <div x-text="theme.files.error_msg" class="exform-content__ace exform-content__file exform-content__file-style" data-type="php" :data-theme="theme.name" data-file="error-msg"></div>
+                                    </div>
+                                </div>
                         </div>
                     </template>
                 </div>
             </div>
 
-            <button class="btn" @click="$store.apiThemes.saveFiles()">Соранить</button>
+            <div class="global-config" x-data x-init="$store.apiThemes.fetchGlobalConfig()">
+                <div class="global-config-title">Глобальные настройки:</div>
+                <div class="global-config-editor"></div>
+            </div>
 
+            <button :class="{ 'btn_active': !$store.apiThemes.isLoading }" class="btn" style="display: none;" @click="$store.apiThemes.saveFiles()">Сохранить (Ctrl + S)</button>
         </main>
     </body>
 </html>

@@ -6,6 +6,7 @@ document.addEventListener('alpine:init', () => {
         themes: [],
         activeTheme: null,
         isLoading: false,
+        globalConfig: [],
         editorInit() {
             document.querySelectorAll('.exform-content__file').forEach((el, i) => {
                 if (!window.editors) {
@@ -20,22 +21,38 @@ document.addEventListener('alpine:init', () => {
             });
         },
         async saveFiles() {
+            let errors = false;
             if (window.editors) {
-                for (let theme of this.themes) {
-                    for (let editor of window.editors) {
-                        let file = editor[0].split('_')[1];
-                        let themeName = theme.name + '_' + file;
-                        let fileContent = editor[1].getValue();
+                for (let editor of window.editors) {
+                    let fileContent = editor[1].getValue();
 
-                        let data = await fetch(window.location.origin + '/exform/admin/api/saveform.php', {
-                            method: 'POST',
-                            body: JSON.stringify({ 'test': 23423 })
-                        });
-                        data = await data.json();
+                    let data = await fetch(window.location.origin + '/exform/admin/api/saveform.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                        body: JSON.stringify({ content: fileContent, theme_and_file: editor[0] })
+                    });
+                    data = await data.json();
 
-                        console.log(data);
-
+                    if (!data.success) {
+                        errors = true;
                     }
+                }
+
+                if (!errors) {
+                    alert('Формы сохранены');
+                }
+            }
+
+            if (window.globalConfig) {
+                let data = await fetch(window.location.origin + '/exform/admin/api/saveconfig.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                    body: JSON.stringify({ content: window.globalConfig.getValue() })
+                });
+                data = await data.json();
+
+                if (data.success) {
+                    alert('Глобальные настройки сохранены');
                 }
             }
         },
@@ -47,6 +64,31 @@ document.addEventListener('alpine:init', () => {
                 this.themes = data.data;
                 if (Object.values(data.data).length > 0) { this.activeTheme = Object.values(data.data)[0].name };
                 this.isLoading = false;
+            }, 500);
+
+            document.addEventListener('keydown', async (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    await this.saveFiles();
+                }
+            });
+        },
+        async fetchGlobalConfig() {
+            setTimeout(async () => {
+                this.isLoading = true;
+                let data = await fetch(window.location.origin + '/exform/admin/api/globalconfig.php', { method: 'POST' });
+                data = await data.json();
+                this.globalConfig = data.data;
+                this.isLoading = false;
+
+
+                let el = document.querySelector('.global-config-editor');
+                el.innerHTML = this.globalConfig;
+                let editor = ace.edit(el);
+                editor.setTheme("ace/theme/chrome");
+                editor.session.setMode("ace/mode/ini");
+                window.globalConfig = editor;
+                
             }, 500);
         }
     });

@@ -16,6 +16,5 @@
         $tm[$k]['files']['config'] = $theme->getContentFromFile('config.ini');
     }
 
-
     echo jsonResponse('Успех', true, $tm);
 ?>

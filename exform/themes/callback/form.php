@@ -3,6 +3,8 @@
 require_once(__DIR__ . '../../../core/bootstrap.php');
 global $config;
 
+// asdasd
+
 $curentTheme = ExformTheme::getCurrentTheme();
 $themeName = $curentTheme->getName();
 $configTheme = $curentTheme->getConfig();

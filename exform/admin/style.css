@@ -13,6 +13,10 @@ header {
     font-size: 22px;
 }
 
+main {
+    margin-bottom: 50px;
+}
+
 .container {
     max-width: 1600px;
     width: 100%;
@@ -26,7 +30,7 @@ main {
 .btn {
     padding: 10px;
     border: none;
-    background: red;
+    background: #43b95d;
     width: 100%;
     max-width: 100px;
     margin-top: 10px;
@@ -34,6 +38,18 @@ main {
     color: white;
     cursor: pointer;
     font-size: 15px;
+    align-items: center;
+    justify-content: center;
+    transition: .2s all;
+    min-width: max-content;
+}
+
+.btn:hover {
+    background: #32cd54;
+}
+
+.btn_active {
+    display: flex !important;
 }
 
 .exform-main {
@@ -46,14 +62,14 @@ main {
     opacity: 0.6;
 }
 
-
-
 .exform-sidebar {
     padding: 20px;
     background-color: #ebebeb;
     border-radius: 10px;
     min-width: 300px;
 }
+
+
 
 .exform-content {
     padding: 20px;
@@ -62,11 +78,8 @@ main {
     width: 100%;
 }
 
-ul {
-    list-style: none;
-}
-
 .exform-sidebar ul {
+    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -77,12 +90,24 @@ ul {
     width: 100%;
     padding: 8px 11px;
     border-radius: 5px;
-    cursor: auto;
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: .2s all;
+}
+
+.exform-sidebar__tab:last-child {
+    margin-bottom: 0;
+}
+
+.exform-sidebar__tab:hover {
+    background-color: rgb(85, 85, 85);
+    color: white;
 }
 
 .exform-sidebar__tab_active {
     background-color: #000000;
     color: white;
+    cursor: auto;
 }
 
 .exform-sidebar__name {
@@ -121,4 +146,22 @@ ul {
 
 .accordion__btn_open {
     background: #525252;
+}
+
+
+.global-config {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ebebeb;
+    border-radius: 10px;
+}
+
+.global-config-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.global-config-editor {
+    height: 300px;
 }

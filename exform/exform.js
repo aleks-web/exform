@@ -213,7 +213,6 @@ class Exform {
     });
   }
 
-
   // Рендер формы / отображение
   async renderForm() {
     if (!!this.theme.config.is_modal) {
