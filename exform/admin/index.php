@@ -10,8 +10,8 @@
 
         <script src="index.js" type="module"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.min.js" defer></script>
+        <script src="alpine.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.js" defer></script>
 
         <link rel="stylesheet" href="style.css" />
 

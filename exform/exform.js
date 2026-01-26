@@ -55,22 +55,12 @@ class ExformManager {
             head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" type="text/css" href="${cssPath}" />`);
         }
     }
-
-    // Закрыть все модалки
-    closeAllModals() {
-        document.querySelectorAll('.exform-wrapper.is_modal').forEach(el => {
-            el.remove();
-            document.querySelector('.bg-exform')?.remove();
-        });
-    }
 }
 
 class Exform {
-  #zIndex;
 
   constructor(themeObjectFromConfigServer = null) {
     this.theme = themeObjectFromConfigServer;
-    this.#zIndex = this.findHighestZIndex();
   }
 
   async init() {
@@ -128,7 +118,7 @@ class Exform {
         submitBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             let formData = new FormData(form);
-            formData.append('z_index', this.findHighestZIndex());
+            formData.append('z_index', Exform.findHighestZIndex());
 
             const response = await fetch(window.exform.getExformUrn() + '/api/sendform.php', {
                 method: 'POST',
@@ -151,22 +141,32 @@ class Exform {
         });
 
         if (!(!!this.theme.config.is_modal)) {
-            this.createBgModal();
+            Exform.openBgModal();
         }
 
         document.body.insertAdjacentHTML('beforeend', msgForm);
-        this.setElementScreenCenter(document.querySelector('.exform-wrapper.is_modal'));
+        Exform.setElementScreenCenter(document.querySelector('.exform-wrapper.is_modal'));
     }
   }
 
+  // Закрывает все модалки Exform
+  static closeAllModals() {
+    document.querySelectorAll('.exform-wrapper.is_modal').forEach(el => {
+        Exform.fadeOut(el, 100);
+        Exform.fadeOut(document.querySelector('.bg-exform'), 200);
+    });
+  }
+
   // Создание заднего фона
-  createBgModal() {
+  static openBgModal() {
     let bgResult = document.querySelectorAll('.bg-exform').length;
-    let zIndex = this.#zIndex + 10;
+    let zIndex = Exform.findHighestZIndex() + 10;
 
     if (!bgResult) {
         document.body.insertAdjacentHTML('afterend', `<div class="bg-exform" style="display: none;z-index:${zIndex};"></div>`);
     }
+
+    Exform.fadeIn(document.querySelector('.bg-exform'));
   }
 
   // Получить форму с сервера
@@ -176,7 +176,7 @@ class Exform {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ action: 'renderForm', theme: this.theme.name, z_index: this.findHighestZIndex() })
+        body: JSON.stringify({ action: 'renderForm', theme: this.theme.name, z_index: Exform.findHighestZIndex() })
     });
 
     result = await result.json();
@@ -184,7 +184,7 @@ class Exform {
   }
 
   // Ищем максимальный z-index, который есть на странице
-  findHighestZIndex() {
+  static findHighestZIndex() {
     let maxZIndex = 0;
     const allElements = document.querySelectorAll('*');
 
@@ -200,38 +200,81 @@ class Exform {
     return maxZIndex;
   }
 
-  setElementScreenCenter(element) {
+  // Установка элемента по центру
+  static setElementScreenCenter(element) {
     let elRec = element.getBoundingClientRect();
     element.style.top = `calc(50% - ${elRec.height / 2}px)`;
     element.style.left = `calc(50% - ${elRec.width / 2}px)`;
   }
 
-  addCenterFormListner(formElement) {
-    this.setElementScreenCenter(formElement);
+  // Установка прослушивателя события для центрирования элемента по центру
+  static addCenterElementListner(formElement) {
+    Exform.setElementScreenCenter(formElement);
     window.addEventListener('resize', () => {
-        this.setElementScreenCenter(formElement);
+        Exform.setElementScreenCenter(formElement);
     });
   }
 
   // Рендер формы / отображение
   async renderForm() {
     if (!!this.theme.config.is_modal) {
-        window.exform.closeAllModals();
-        this.createBgModal();
+        Exform.closeAllModals();
+        Exform.openBgModal();
 
         let formCode = await this.getFormFromServer();
         document.body.insertAdjacentHTML('beforeend', formCode);
         let form = document.querySelector('.exform-wrapper.' + this.theme.name);
+        Exform.fadeIn(form, 1);
 
-        this.addCenterFormListner(form);
+        Exform.addCenterElementListner(form);
         this.addSubmitListner(form);
     } else {
         let selector = document.querySelector(this.theme.config.selector);
         let form = await this.getFormFromServer();
         selector.innerHTML = form;
         form = selector.querySelector('.exform-wrapper');
+        Exform.fadeIn(form, 1);
         this.addSubmitListner(form);
     }
+  }
+
+  static fadeIn(el, opacityValue = 0.25) {
+    el.style.opacity = 0;
+    el.style.display = "block";
+    let last = +new Date();
+    let tick = function() {
+        el.style.opacity = +el.style.opacity + (new Date() - last) / 400;
+        last = +new Date();
+        if (+el.style.opacity < opacityValue) {
+            (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+        }
+    };
+    tick();
+  }
+
+  static fadeOut(el, duration = 100, isRemove = true) {
+    let opacity = el?.style?.opacity ? Number.parseFloat(el.style.opacity) : 1;
+    let start = null;
+
+    function step(timestamp) {
+        if (!start) start = timestamp;
+        let progress = timestamp - start;
+        
+        opacity = opacity - (progress / duration);
+        el.style.opacity = opacity;
+
+        if (progress < duration) {
+            requestAnimationFrame(step);
+        } else {
+            el.style.opacity = 0;
+            el.style.display = 'none';
+            
+            if (isRemove) {
+                el.remove();
+            }
+        }
+    }
+    requestAnimationFrame(step);
   }
 }
 
@@ -240,6 +283,8 @@ class Exform {
 */
 window.exform = new ExformManager();
 await window.exform.init();
+
+window.Exform = Exform;
 
 /*
     Создаем формы

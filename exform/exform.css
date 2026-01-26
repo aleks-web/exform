@@ -1,3 +1,10 @@
+@import url('assets/fonts/fonts.css');
+
+:root {
+    --exform-main-color: #ff0045;
+    --exform-main-color-hover: #d51a4c;
+}
+
 .bg-exform {
     display: flex !important;
     position: absolute;
@@ -8,6 +15,10 @@
     background-color: black;
     opacity: 0.1;
     z-index: 10;
+}
+.exform-wrapper * {
+    box-sizing: border-box;
+    font-family: 'Circe Regular';
 }
 
 .exform-wrapper.is_modal {
@@ -21,7 +32,88 @@
     max-width: 700px;
 }
 
+
+.exform-wrapper .exform-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.exform-wrapper .exform-input,
+.exform-wrapper .exform-textarea {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    background-color: #ededed;
+    padding: 0 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.exform-wrapper .exform-textarea {
+    border-radius: 25px !important;
+    padding: 8px 14px !important;
+}
+
+.exform-wrapper .exform-textarea textarea {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    font-size: 16px;
+    resize: none;
+    border: none;
+    outline: none;
+}
+
+.exform-wrapper .exform-input svg,
+.exform-wrapper .exform-textarea svg {
+    width: 20px;
+    fill: #585858;
+}
+
+
+
+.exform-wrapper input {
+    outline: unset;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
+    padding: 12px 15px;
+    width: 100%;
+}
+
+.exform-wrapper [type="submit"] {
+    border: none;
+    background: var(--exform-main-color);
+    color: white;
+    transition: .2s all;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50px;
+    margin-top: 20px;
+    font-size: 19px;
+}
+
+.exform-wrapper [type="submit"]:hover {
+    background: var(--exform-main-color-hover);
+}
+
+.exform-wrapper [autocomplete="given-name"]:before {
+    content: '';
+    width: 30px;
+    height: 30px;
+    background-color: red;
+}
+
 .exform-header {
+    font-size: 28px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -31,10 +123,26 @@
     width: 35px;
     height: 35px;
     position: absolute;
-    bottom: 100%;
-    left: 100%;
-    background: green;
+    bottom: 93%;
+    left: 99%;
+    padding: 10px;
     cursor: pointer;
+    transition: .2s all;
+}
+
+.exform-btn-close:hover {
+    transform: scale(1.1);
+}
+
+.exform-btn-close:hover svg {
+    transform: rotate(90deg);
+    fill: #FF0233;
+}
+
+.exform-btn-close svg {
+    width: 100%;
+    height: 100%;
+    transition: .5s all;
 }
 
 

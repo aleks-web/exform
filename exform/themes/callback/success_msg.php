@@ -9,5 +9,5 @@ $config = $theme->getConfig();
 
 <div class="exform-wrapper is_modal exform-msg exform-msg__success" style="z-index: <?= $config['z_index'] + 10; ?>;">
     <div><?php echo $config['send_form_success_msg']; ?></div>
-    <button onclick="window.exform.closeAllModals()">Хорошо!</button>
+    <button onclick="window.Exform.closeAllModals()">Хорошо!</button>
 </div>
