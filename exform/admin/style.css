@@ -23,6 +23,19 @@ main {
     margin-top: 50px;
 }
 
+.btn {
+    padding: 10px;
+    border: none;
+    background: red;
+    width: 100%;
+    max-width: 100px;
+    margin-top: 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
 .exform-main {
     margin-top: 40px;
     display: flex;
@@ -32,6 +45,8 @@ main {
 .exform-main_loading {
     opacity: 0.6;
 }
+
+
 
 .exform-sidebar {
     padding: 20px;
@@ -76,9 +91,34 @@ ul {
     margin-bottom: 10px;
 }
 
+/*
+    Tab content
+*/
 .exform-content__tab {
     display: none;
 }
 .exform-content__tab_active {
     display: block;
+}
+
+.exform-content__ace {
+    height: 500px;
+}
+
+/*
+    Accordion
+*/
+.accordion__btn {
+    background: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.accordion__btn_open {
+    background: #525252;
 }

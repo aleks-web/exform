@@ -30,8 +30,8 @@
             <div class="container">Exform</div>
         </header>
 
-        <main class="container">
-            <div class="exform-main" x-data x-init="$store.apiThemes.fetchThemes()" :class="{ 'exform-main_loading': $store.apiThemes.isLoading }">
+        <main class="container" x-data x-init="$store.apiThemes.fetchThemes()">
+            <div class="exform-main" :class="{ 'exform-main_loading': $store.apiThemes.isLoading }">
                 <div class="exform-sidebar">
                     <div class="exform-sidebar__name">Формы:</div>
                     <template x-for="theme in $store.apiThemes.themes">
@@ -43,13 +43,33 @@
                 <div class="exform-content">
                     <template x-for="theme in $store.apiThemes.themes">
                         <div class="exform-content__tab" :class="{'exform-content__tab_active': $store.apiThemes.activeTheme === theme.name}">
-                            <div x-text="theme.files.form" :id="$id('exform-content')"></div>
+                            
+                            
+
+                                <div x-data="accordion" class="accordion">
+                                    <div @click="toggle" class="accordion__btn" :class="{'accordion__btn_open': open}">Файл формы (form.php)</div>
+
+                                    <div x-show="open" x-cloak>
+                                        <div x-text="theme.files.form" class="exform-content__ace exform-content__file exform-content__file-form"  data-type="php" :data-theme="theme.name" data-file="form"></div>
+                                    </div>
+                                </div>
+
+                                <div x-data="accordion" class="accordion">
+                                    <div @click="toggle" class="accordion__btn" :class="{'accordion__btn_open': open}">Файл стилей</div>
+
+                                    <div x-show="open" x-cloak>
+                                        <div x-text="theme.files.style" class="exform-content__ace exform-content__file exform-content__file-style" data-type="css" :data-theme="theme.name" data-file="style"></div>
+                                    </div>
+                                </div>
+
+
                         </div>
                     </template>
                 </div>
-
-                <div id="editor">sad</div>
             </div>
+
+            <button class="btn" @click="$store.apiThemes.saveFiles()">Соранить</button>
+
         </main>
     </body>
 </html>

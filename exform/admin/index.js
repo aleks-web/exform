@@ -7,11 +7,37 @@ document.addEventListener('alpine:init', () => {
         activeTheme: null,
         isLoading: false,
         editorInit() {
-            document.querySelectorAll('.exform-content__tab').forEach((el, i) => {
+            document.querySelectorAll('.exform-content__file').forEach((el, i) => {
+                if (!window.editors) {
+                    window.editors = new Map();
+                }
+
                 let editor = ace.edit(el);
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/php");
+                editor.setTheme("ace/theme/chrome");
+                editor.session.setMode("ace/mode/" + el.dataset.type);
+
+                window.editors.set(el.dataset.theme + '_' + el.dataset.file, editor);
             });
+        },
+        async saveFiles() {
+            if (window.editors) {
+                for (let theme of this.themes) {
+                    for (let editor of window.editors) {
+                        let file = editor[0].split('_')[1];
+                        let themeName = theme.name + '_' + file;
+                        let fileContent = editor[1].getValue();
+
+                        let data = await fetch(window.location.origin + '/exform/admin/api/saveform.php', {
+                            method: 'POST',
+                            body: JSON.stringify({ 'test': 23423 })
+                        });
+                        data = await data.json();
+
+                        console.log(data);
+
+                    }
+                }
+            }
         },
         async fetchThemes() {
             setTimeout(async () => {
@@ -23,6 +49,14 @@ document.addEventListener('alpine:init', () => {
                 this.isLoading = false;
             }, 500);
         }
-    })
+    });
+
+
+    Alpine.data('accordion', () => ({
+        open: false,
+        toggle() {
+            this.open = !this.open;
+        }
+    }));
 
 });

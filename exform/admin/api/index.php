@@ -11,6 +11,9 @@
         $tm[$k] = $theme->toArray();
         $tm[$k]['files']['form'] = $theme->getContentFromFile('form.php');
         $tm[$k]['files']['style'] = $theme->getContentFromFile('/assets/style.css');
+        $tm[$k]['files']['success_msg'] = $theme->getContentFromFile('success_msg.php');
+        $tm[$k]['files']['error_msg'] = $theme->getContentFromFile('error_msg.php');
+        $tm[$k]['files']['config'] = $theme->getContentFromFile('config.ini');
     }
 
 
