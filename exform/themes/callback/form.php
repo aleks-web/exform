@@ -55,6 +55,13 @@ $formHeaderText = $configTheme['form_header_text'];
 
         <button type="submit">Отправить заявку</button>
 
+        <div class="exform-agree checked">
+            <div class="exform-agree__checkbox">
+                <input type="checkbox" checked value="1" name="agree">
+            </div>
+            <span>Нажимая на кнопку, я даю согласие на получение сообщений рекламного характера и соглашаюсь с обработкой персональных данных в соответствии с <a href="" class="exform-agree-stop">соглашением о конфиденциальности</a></span>
+        </div>
+
         <input type="hidden" name="theme" value="<?= $themeName; ?>">
 	</form>
 

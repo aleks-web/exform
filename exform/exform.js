@@ -149,6 +149,41 @@ class Exform {
     }
   }
 
+  static initAgree(agreeElement) {
+    if (!agreeElement) { return }
+
+    const input = agreeElement.querySelector('input');
+    const formBtn = document.querySelector('.exform-wrapper [type="submit"]');
+
+    function enableAgree() {
+        agreeElement.classList.add('checked');
+        input.setAttribute('checked', '');
+        input.value = 1;
+        formBtn.classList.remove('disabled');
+    }
+
+    function disableAgree() {
+        agreeElement.classList.remove('checked');
+        input.removeAttribute('checked');
+        input.value = 0;
+        formBtn.classList.add('disabled');
+    }
+
+    enableAgree();
+
+    agreeElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (!e.target.closest('.exform-agree-stop')) {
+            if (!agreeElement.closest('.checked')) {
+                enableAgree();
+            } else {
+                disableAgree();
+            }
+        }
+    });
+  }
+
   // Закрывает все модалки Exform
   static closeAllModals() {
     document.querySelectorAll('.exform-wrapper.is_modal').forEach(el => {
@@ -225,7 +260,7 @@ class Exform {
         document.body.insertAdjacentHTML('beforeend', formCode);
         let form = document.querySelector('.exform-wrapper.' + this.theme.name);
         Exform.fadeIn(form, 1);
-
+        Exform.initAgree(form.querySelector('.exform-agree'));
         Exform.addCenterElementListner(form);
         this.addSubmitListner(form);
     } else {
@@ -234,6 +269,7 @@ class Exform {
         selector.innerHTML = form;
         form = selector.querySelector('.exform-wrapper');
         Exform.fadeIn(form, 1);
+        Exform.initAgree(form.querySelector('.exform-agree'));
         this.addSubmitListner(form);
     }
   }
