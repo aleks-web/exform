@@ -149,6 +149,7 @@ class Exform {
     }
   }
 
+  // Инициализация agree блока
   static initAgree(agreeElement) {
     if (!agreeElement) { return }
 
@@ -237,9 +238,11 @@ class Exform {
 
   // Установка элемента по центру
   static setElementScreenCenter(element) {
-    let elRec = element.getBoundingClientRect();
-    element.style.top = `calc(50% - ${elRec.height / 2}px)`;
-    element.style.left = `calc(50% - ${elRec.width / 2}px)`;
+    if (window.innerWidth > 500) {
+        let elRec = element.getBoundingClientRect();
+        element.style.top = `calc(50% - ${elRec.height / 2}px)`;
+        element.style.left = `calc(50% - ${elRec.width / 2}px)`;
+    }
   }
 
   // Установка прослушивателя события для центрирования элемента по центру

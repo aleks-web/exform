@@ -16,11 +16,15 @@
     opacity: 0.1;
     z-index: 10;
 }
+.exform-wrapper,
 .exform-wrapper * {
     box-sizing: border-box;
     font-family: 'Circe Regular';
 }
 
+/*
+    Exform если модалка
+*/
 .exform-wrapper.is_modal {
     position: absolute;
     top: 0;
@@ -32,13 +36,18 @@
     max-width: 700px;
 }
 
-
+/*
+    Обертка полей формы
+*/
 .exform-wrapper .exform-fields {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+/*
+    Поля
+*/
 .exform-wrapper .exform-input,
 .exform-wrapper .exform-textarea {
     width: 100%;
@@ -58,6 +67,10 @@
     padding: 8px 14px !important;
 }
 
+
+/*
+    Сброс стилей у полей браузера
+*/
 .exform-wrapper .exform-textarea textarea {
     width: 100%;
     height: 100%;
@@ -74,7 +87,14 @@
     fill: #585858;
 }
 
-
+.exform-wrapper input {
+    outline: unset;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
+    padding: 12px 15px;
+    width: 100%;
+}
 
 
 
@@ -155,16 +175,9 @@
 
 
 
-
-.exform-wrapper input {
-    outline: unset;
-    border: none;
-    font-size: 16px;
-    background-color: transparent;
-    padding: 12px 15px;
-    width: 100%;
-}
-
+/*
+    Start Exform Кнопка
+*/
 .exform-wrapper [type="submit"] {
     border: none;
     background: var(--exform-main-color);
@@ -190,19 +203,19 @@
     background: var(--exform-main-color-hover);
 }
 
-.exform-wrapper [autocomplete="given-name"]:before {
-    content: '';
-    width: 30px;
-    height: 30px;
-    background-color: red;
-}
-
 .exform-header {
     font-size: 28px;
     margin-bottom: 20px;
     text-align: center;
 }
+/*
+    End Exform Кнопка
+*/
 
+
+/*
+    Start кнопка закрытия
+*/
 .exform-btn-close {
     content: '';
     width: 45px;
@@ -229,9 +242,14 @@
     height: 100%;
     transition: .5s all;
 }
+/*
+    End кнопка закрытия
+*/
 
 
-
+/*
+    Exform сообщение об успешной / не успешной отправки формы
+*/
 .exform-msg {
     display: flex;
     flex-direction: column;
